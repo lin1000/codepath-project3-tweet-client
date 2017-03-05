@@ -18,7 +18,6 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
         btnLoginButton = (Button) findViewById(R.id.loginbutton);
-        btnMyButton = (Button) findViewById(R.id.mybutton);
 
         System.out.println("Hello");
 	}
