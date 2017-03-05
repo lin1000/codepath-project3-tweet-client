@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements  ComposeDialogueFragment.ComposeDialogueFragmentListener{
 
     private Toolbar tlToolbar;
     private TwitterClient client;
@@ -44,7 +44,7 @@ public class TimelineActivity extends AppCompatActivity {
         setSupportActionBar(tlToolbar);
         //getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.drawable.twitter);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled (true);
 
 
         lvTweets = (ListView) findViewById(R.id.tweetListView);
@@ -152,4 +152,9 @@ public class TimelineActivity extends AppCompatActivity {
         composeDialogueFragment.show(fm, "compose_fragment");
     }
 
+    @Override
+    public void onFinishCompose() {
+        tweetsAdapter.clear();
+        populateTimeline(perRequestTweetCount,1L,1L);
+    }
 }

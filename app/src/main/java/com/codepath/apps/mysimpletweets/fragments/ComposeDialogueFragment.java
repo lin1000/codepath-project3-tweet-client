@@ -30,6 +30,11 @@ import cz.msebera.android.httpclient.Header;
 
 public class ComposeDialogueFragment extends DialogFragment {
 
+    public interface ComposeDialogueFragmentListener {
+        void onFinishCompose();
+    }
+
+
     ImageView profileImageView;
     TextView preferredNameView;
     TextView screenNameView;
@@ -125,8 +130,8 @@ public class ComposeDialogueFragment extends DialogFragment {
                     }
                 });
 
-
-
+                ComposeDialogueFragmentListener listener = (ComposeDialogueFragmentListener) getActivity();
+                listener.onFinishCompose();
                 dismiss();
             }
         });
