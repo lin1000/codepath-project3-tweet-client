@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,8 @@ import cz.msebera.android.httpclient.Header;
 
 public class ComposeDialogueFragment extends DialogFragment {
 
+    private static int twitterStatusLimit =140;
+
     public interface ComposeDialogueFragmentListener {
         void onFinishCompose();
     }
@@ -40,6 +44,7 @@ public class ComposeDialogueFragment extends DialogFragment {
     TextView screenNameView;
     EditText composeTextView;
     Button tweetButtonView;
+    TextView textCountView;
     TwitterClient client;
 
     public ComposeDialogueFragment() {}
@@ -79,6 +84,7 @@ public class ComposeDialogueFragment extends DialogFragment {
         screenNameView = (TextView) view.findViewById(R.id.screen_name);
         composeTextView = (EditText) view.findViewById(R.id.composeText);
         tweetButtonView = (Button) view.findViewById(R.id.tweet_button);
+        textCountView = (TextView) view.findViewById(R.id.text_count);
 
         Log.d("DEBUG","profileImageView"+ profileImageView);
         Log.d("DEBUG","preferredNameView"+ preferredNameView);
@@ -91,7 +97,7 @@ public class ComposeDialogueFragment extends DialogFragment {
 
         preferredNameView.setText(preferredName);
         preferredNameView.setTextColor(Color.DKGRAY);
-        screenNameView.setText("@"+"screenName");
+        screenNameView.setText("@"+screenName);
         screenNameView.setTextColor(Color.DKGRAY);
 
 
@@ -133,6 +139,26 @@ public class ComposeDialogueFragment extends DialogFragment {
                 ComposeDialogueFragmentListener listener = (ComposeDialogueFragmentListener) getActivity();
                 listener.onFinishCompose();
                 dismiss();
+            }
+        });
+
+        composeTextView.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int currentStatusLength =  s.length();
+                int wordsLeft = twitterStatusLimit - currentStatusLength;
+                textCountView.setText(String.valueOf(wordsLeft));
+
+                if (wordsLeft < 120 ) {
+                    textCountView.setTextColor(Color.RED);
+                }
+
             }
         });
 

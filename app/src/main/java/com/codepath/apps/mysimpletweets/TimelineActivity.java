@@ -16,6 +16,7 @@ import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ public class TimelineActivity extends AppCompatActivity implements  ComposeDialo
     private static long oldestTweetId=1;
     private static int perRequestTweetCount = 20;
 
+    private String userProfileImageUrl;
+    private String userPreferredName;
+    private String userScreenName;
     ComposeDialogueFragment composeDialogueFragment;
 
     @Override
@@ -143,13 +147,42 @@ public class TimelineActivity extends AppCompatActivity implements  ComposeDialo
     }
 
     private void showComposeDialog(){
-        String profileImageUrl = tweets.get(0).getUser().getProfileImageUrl();
-        String preferredName = tweets.get(0).getUser().getName();
-        String screenName = tweets.get(0).getUser().getScreenName();
-        FragmentManager fm = getSupportFragmentManager();
-        //composeDialogueFragment = ComposeDialogueFragmentFactory.getInstance();
-        composeDialogueFragment = ComposeDialogueFragment.newInstance(profileImageUrl,preferredName,screenName);
-        composeDialogueFragment.show(fm, "compose_fragment");
+
+        client.verifyCredentials(new JsonHttpResponseHandler(){
+            //success
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
+                super.onSuccess(statusCode, headers, jsonObject);
+                //deserialize
+                //create model
+                //load into view
+                Log.d("DEBUG",jsonObject.toString());
+                try {
+                    TimelineActivity.this.userProfileImageUrl = jsonObject.getString("profile_image_url");
+                    TimelineActivity.this.userPreferredName = jsonObject.getString("screen_name");
+                    TimelineActivity.this.userScreenName =jsonObject.getString("name");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                String profileImageUrl = userProfileImageUrl;
+                String preferredName = userPreferredName;
+                String screenName = userScreenName;
+                FragmentManager fm = getSupportFragmentManager();
+                //composeDialogueFragment = ComposeDialogueFragmentFactory.getInstance();
+                composeDialogueFragment = ComposeDialogueFragment.newInstance(profileImageUrl,preferredName,screenName);
+                composeDialogueFragment.show(fm, "compose_fragment");
+            }
+
+            //failure
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("DEBUG",errorResponse.toString());
+            }
+        });
+
+
     }
 
     @Override
