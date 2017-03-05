@@ -1,6 +1,7 @@
 package com.codepath.apps.mysimpletweets;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.codepath.apps.mysimpletweets.adapters.TweetsArrayAdapter;
+import com.codepath.apps.mysimpletweets.fragments.ComposeDialogueFragment;
 import com.codepath.apps.mysimpletweets.listeners.AbstractEndlessScrollListener;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -29,6 +31,8 @@ public class TimelineActivity extends AppCompatActivity {
     ListView lvTweets;
     private static long oldestTweetId=1;
     private static int perRequestTweetCount = 20;
+
+    ComposeDialogueFragment composeDialogueFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,7 @@ public class TimelineActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_compose) {
             Log.d("DEBUG", " R.id.action_compose clicked");
-
+            showComposeDialog();
             return true;
         }
 
@@ -137,4 +141,15 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void showComposeDialog(){
+        String profileImageUrl = tweets.get(0).getUser().getProfileImageUrl();
+        String preferredName = tweets.get(0).getUser().getName();
+        String screenName = tweets.get(0).getUser().getScreenName();
+        FragmentManager fm = getSupportFragmentManager();
+        //composeDialogueFragment = ComposeDialogueFragmentFactory.getInstance();
+        composeDialogueFragment = ComposeDialogueFragment.newInstance(profileImageUrl,preferredName,screenName);
+        composeDialogueFragment.show(fm, "compose_fragment");
+    }
+
 }
