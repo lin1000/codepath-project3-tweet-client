@@ -50,7 +50,6 @@ public class TimelineActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
                 super.onSuccess(statusCode, headers, json);
                 Log.d("DEBUG",json.toString());
-
                 //deserialize
                 //create model
                 //load into view
