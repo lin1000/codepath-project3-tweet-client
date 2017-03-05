@@ -2,7 +2,10 @@ package com.codepath.apps.mysimpletweets;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.codepath.apps.mysimpletweets.adapters.TweetsArrayAdapter;
@@ -19,6 +22,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class TimelineActivity extends AppCompatActivity {
 
+    private Toolbar tlToolbar;
     private TwitterClient client;
     private ArrayList<Tweet> tweets;
     private TweetsArrayAdapter tweetsAdapter;
@@ -26,11 +30,18 @@ public class TimelineActivity extends AppCompatActivity {
     private static long oldestTweetId=1;
     private static int perRequestTweetCount = 20;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+
+        //Toolbar
+        tlToolbar = (Toolbar) findViewById(R.id.toolbar) ;
+        setSupportActionBar(tlToolbar);
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.twitter);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
 
         lvTweets = (ListView) findViewById(R.id.tweetListView);
 
@@ -56,6 +67,34 @@ public class TimelineActivity extends AppCompatActivity {
 
         populateTimeline(perRequestTweetCount,1L,1L);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_timeline, menu);
+        MenuItem composeItem = menu.findItem(R.id.action_compose);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        Log.d("DEBUG", "item.getItemId()="+ item.getItemId());
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_compose) {
+            Log.d("DEBUG", " R.id.action_compose clicked");
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     // Append the next page of data into the adapter
     // This method probably sends out a network request and appends new data items to your adapter.
