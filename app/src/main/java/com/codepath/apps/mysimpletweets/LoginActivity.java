@@ -1,18 +1,26 @@
-package com.codepath.apps.restclienttemplate;
+package com.codepath.apps.mysimpletweets;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 
 import com.codepath.oauth.OAuthLoginActionBarActivity;
-import com.codepath.oauth.OAuthLoginActivity;
 
-public class LoginActivity extends OAuthLoginActionBarActivity<RestClient> {
+public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
+
+    Button btnLoginButton;
+    Button btnMyButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+        btnLoginButton = (Button) findViewById(R.id.loginbutton);
+        btnMyButton = (Button) findViewById(R.id.mybutton);
+
+        System.out.println("Hello");
 	}
 
 
@@ -27,9 +35,9 @@ public class LoginActivity extends OAuthLoginActionBarActivity<RestClient> {
 	// i.e Display application "homepage"
 	@Override
 	public void onLoginSuccess() {
-		// Intent i = new Intent(this, PhotosActivity.class);
-		// startActivity(i);
-	}
+		Intent i = new Intent(this, TimelineActivity.class);
+		startActivity(i);
+    }
 
 	// OAuth authentication flow failed, handle the error
 	// i.e Display an error dialog or toast
@@ -42,6 +50,8 @@ public class LoginActivity extends OAuthLoginActionBarActivity<RestClient> {
 	// Uses the client to initiate OAuth authorization
 	// This should be tied to a button used to login
 	public void loginToRest(View view) {
+        System.out.println("clicked");
+        System.out.println("getClient().getClass().getName())="+ getClient().getClass().getName());
 		getClient().connect();
 	}
 

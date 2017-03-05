@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.codepath.apps.restclienttemplate"
-        minSdkVersion 18
-        targetSdkVersion 24
+        minSdkVersion 16
+        targetSdkVersion 21
     }
 
     // Related to https://github.com/scribejava/scribejava/issues/480
@@ -43,4 +43,5 @@ dependencies {
     annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
+    compile 'com.jakewharton:butterknife:8.4.0'
 }
