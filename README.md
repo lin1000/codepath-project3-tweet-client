@@ -46,7 +46,9 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you can get done to improve the app functionality!
+* [x] List anything else that you can get done to improve the app functionality!
+
+1. I designed a ArrayList<ImageView> in ViewHolder to dynamicall handle/render the multiple media (extended_entities) in tweets.
 
 ## Video Walkthrough
 
@@ -60,7 +62,6 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 Describe any challenges encountered while building the app.
 
-1. I designed a ArrayList<ImageView> in ViewHolder to dynamicall handle/render the multiple media (extended_entities) in tweets.
 
 ## Open-source libraries used
 
