@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.ListView;
 
 import com.codepath.apps.mysimpletweets.adapters.TweetsArrayAdapter;
+import com.codepath.apps.mysimpletweets.listeners.AbstractEndlessScrollListener;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -22,6 +23,8 @@ public class TimelineActivity extends AppCompatActivity {
     private ArrayList<Tweet> tweets;
     private TweetsArrayAdapter tweetsAdapter;
     ListView lvTweets;
+    private static long oldestTweetId=1;
+    private static int perRequestTweetCount = 20;
 
 
     @Override
@@ -35,25 +38,56 @@ public class TimelineActivity extends AppCompatActivity {
         tweetsAdapter = new TweetsArrayAdapter(this,tweets);
         lvTweets.setAdapter(tweetsAdapter);
 
+        // Attach the listener to the AdapterView onCreate
+        lvTweets.setOnScrollListener(new AbstractEndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to your AdapterView
+                loadNextDataFromApi(page);
+                Log.d("DEBUG","onLoadMore:page"+ page);
+                Log.d("DEBUG","onLoadMore:totalItemsCount"+ totalItemsCount);
+                // or loadNextDataFromApi(totalItemsCount);
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+            }
+        });
+
         client = TwitterApplication.getRestClient(); //singleton client
 
-        populateTimeline();
+        populateTimeline(perRequestTweetCount,1L,1L);
+    }
+
+    // Append the next page of data into the adapter
+    // This method probably sends out a network request and appends new data items to your adapter.
+    public void loadNextDataFromApi(int offset) {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        populateTimeline(perRequestTweetCount,1,TimelineActivity.oldestTweetId-1);
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyDataSetChanged()`
     }
 
     //send api quest to get tweets
     //populate listview by creating tweets object from json
-    private void populateTimeline(){
-        client.getHomeTimeline(new JsonHttpResponseHandler(){
-            //success
+    private void populateTimeline(int count , long since_id, long max_id){
+        Log.d("DEBUG", "populateTimeline=max_id="+max_id);
 
+        client.getHomeTimeline(count, since_id, max_id, new JsonHttpResponseHandler(){
+            //success
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
                 super.onSuccess(statusCode, headers, json);
-                Log.d("DEBUG",json.toString());
                 //deserialize
                 //create model
                 //load into view
-                tweetsAdapter.addAll(Tweet.fromJSONArray(json));
+                ArrayList<Tweet> tweets = Tweet.fromJSONArray(json);
+                if (tweets!=null && tweets.size()>1) {
+                    Tweet oldestTweet = tweets.get(tweets.size()-1);
+                    TimelineActivity.oldestTweetId = oldestTweet.getUid();
+                    Log.d("DEBUG","oldestTweetId="+ oldestTweetId);
+                }
+                tweetsAdapter.addAll(tweets);
             }
 
             //failure

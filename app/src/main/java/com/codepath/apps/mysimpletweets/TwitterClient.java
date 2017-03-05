@@ -1,6 +1,7 @@
 package com.codepath.apps.mysimpletweets;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -8,10 +9,6 @@ import com.loopj.android.http.RequestParams;
 
 import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
-
-import java.util.function.Consumer;
-
-import static org.scribe.model.Verb.GET;
 
 /*
  * 
@@ -36,16 +33,6 @@ public class TwitterClient extends OAuthBaseClient {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
 
-	// CHANGE THIS
-	// DEFINE METHODS for different API endpoints here
-	public void getInterestingnessList(AsyncHttpResponseHandler handler) {
-		String apiUrl = getApiUrl("?nojsoncallback=1&method=flickr.interestingness.getList");
-		// Can specify query string params directly or through RequestParams.
-		RequestParams params = new RequestParams();
-		params.put("format", "json");
-		client.get(apiUrl, params, handler);
-	}
-
 	//Home Timeline Endpoint
     //    Endpoints:
     //      - Get the home timeline for the user
@@ -60,6 +47,18 @@ public class TwitterClient extends OAuthBaseClient {
         //Execute the request
         getClient().get(apiUrl, params, handler);
     }
+
+	public void getHomeTimeline(int count, long since_id, long max_id, AsyncHttpResponseHandler handler){
+		String apiUrl = getApiUrl("statuses/home_timeline.json");
+		RequestParams params = new RequestParams();
+		params.put("count", count);
+		params.put("since_id",since_id);
+        Log.d("DEBUG", "mmax_id="+ max_id);
+        if(max_id!=1L)
+            params.put("max_id",max_id);
+		//Execute the request
+		getClient().get(apiUrl, params, handler);
+	}
 
     // COMPOST TWEET
 
