@@ -67,7 +67,7 @@ Describe any challenges encountered while building the app.
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
-- [ButterKnife]() - View Injection - not using it this time
+- [Glide]() - View Injection - not using it this time
 and more...
 
 ## License
